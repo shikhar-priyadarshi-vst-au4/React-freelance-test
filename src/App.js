@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { Account } from './modules/Account/account';
+import { Todos } from './modules/Home/todo'
+import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
+
+const queryClient = new QueryClient();
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  return <>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Switch>
+          <Route exact path={"/"} component={Account} />
+          <Route exact path={'/todo/activities'} component={Todos} />
+          <Route exact path="*" render={() => <Redirect to={'/'} />} />
+        </Switch>
+      </Router>
+    </QueryClientProvider>
+  </>
 }
 
 export default App;
