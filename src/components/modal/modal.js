@@ -1,6 +1,6 @@
-export const Modal = ({ children, buttonText = "Save Changes", submitHandler = () => { } }) => {
+export const Modal = ({ children, buttonText = "Save Changes", submitHandler = () => { }, id = "myModal" }) => {
     return <>
-        <div class="modal fade modal-xl" id={"myModal"} tabindex="-1">
+        <div class="modal fade modal-xl" id={id} tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -14,7 +14,7 @@ export const Modal = ({ children, buttonText = "Save Changes", submitHandler = (
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onClick={submitHandler}>{buttonText}</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onClick={submitHandler}>{buttonText}</button>
                     </div>
                 </div>
             </div>

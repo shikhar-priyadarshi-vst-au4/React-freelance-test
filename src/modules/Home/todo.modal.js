@@ -1,11 +1,8 @@
-import { useState } from 'react';
-import { useMutation } from 'react-query';
-import axios from 'axios';
-
+import { useState, useEffect } from 'react';
 import { Input } from '../../components/input/input';
 import { Modal } from '../../components/modal/modal';
 
-export const CreateTodoModal = ({ children }) => {
+export const TodoModal = ({ fnHandler, item = "", buttonText = "Create Todo", dataId }) => {
     const [todo, setTodo] = useState({
         subject: "",
         todoDate: "",
@@ -14,25 +11,19 @@ export const CreateTodoModal = ({ children }) => {
         status: "",
         notes: ""
     })
+
+    useEffect(() => {
+        setTodo({ ...todo, ...item });
+    }, [item])
+
     const todoEntries = Object.entries(todo);
     const changeHandler = (e) => setTodo({ ...todo, [e.target.name]: e.target.value });
-    const createTodo = (data) => axios.post(`http://8d9f20ea3607.ngrok.io/api/add_task/${data.id}`, data);
-    const mutation = useMutation(createTodo, {
-        onSuccess: (data, variables, context) => {
-            console.log(data);
-
-        },
-        onError: (error, variables, context) => {
-            console.log(error);
-
-        }
-    });
 
     const submit = () => {
-        mutation.mutate({ ...todo, id: localStorage.getItem("userId") })
+        fnHandler(todo);
     }
     return <>
-        <Modal buttonText={"Create Todo"} submitHandler={submit}>
+        <Modal buttonText={buttonText} submitHandler={submit} id={dataId}>
             <div className="container-fluid">
                 <div className="row row-cols-2">
                     {todoEntries.map((v, i) => <div className="col-6" key={i}>

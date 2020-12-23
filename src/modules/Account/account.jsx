@@ -12,10 +12,10 @@ export const Account = () => {
     const history = useHistory();
 
     useEffect(() => {
-        if (localStorage.getItem("isLoggedIn")) {
+        if (localStorage.getItem("access_token")) {
             history.push('/todo/activities');
         }
-    }, [localStorage.getItem("isLoggedIn")])
+    }, []);
 
     const callToast = (msg) => toast(msg);
 

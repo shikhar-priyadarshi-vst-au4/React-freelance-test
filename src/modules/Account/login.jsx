@@ -12,23 +12,19 @@ export const Login = ({ toast }) => {
         password: ""
     })
 
-    const loginChangeHandler = (e) => setLogin({ ...login, [e.target.name]: e.target.value })
+   const loginChangeHandler = (e) => setLogin({ ...login, [e.target.name]: e.target.value })
 
-    const loginUser = (data) => axios.post(`http://8d9f20ea3607.ngrok.io/api/signin`, data);
-    const mutation = useMutation(loginUser, {
+    const loginUser = (data) => axios.post(`http://54.151.174.48:8000/api/signin`, data);
+    const mutation = useMutation(loginUser,{
         onSuccess: (data, variables, context) => {
             console.log(data);
             toast("Login succcessfull, loading please wait")
-            localStorage.setItem("isLoggedIn", true);
-            localStorage.setItem("userId", data._id);
+            localStorage.setItem("access_token", data.data.token);
+            localStorage.setItem("user_id", data.data.user._id);
             history.push('/todo/activities');
         },
         onError: (error, variables, context) => {
-            console.log(error);
-            toast("Invalid email or password")
-            //API's not working thats the following 
-            localStorage.setItem("isLoggedIn", true);
-            history.push('/todo/activities');
+            toast(error.response.data.error);
         }
     });
 

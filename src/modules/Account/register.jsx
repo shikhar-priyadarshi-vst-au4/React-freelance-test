@@ -5,8 +5,6 @@ import axios from 'axios';
 import { Input } from '../../components/input/input';
 import { Button } from '../../components/button/button';
 
-
-
 export const Register = ({ toast }) => {
     const [register, setRegister] = useState({
         firstname: "",
@@ -22,15 +20,14 @@ export const Register = ({ toast }) => {
 
     const registerChangeHandler = (e) => setRegister({ ...register, [e.target.name]: e.target.value })
 
-    const createUser = (data) => axios.post(`http://8d9f20ea3607.ngrok.io/api/signup`, data);
+    const createUser = (data) => axios.post(`http://54.151.174.48:8000/api/signup`, data);
     const mutation = useMutation(createUser, {
         onSuccess: (data, variables, context) => {
             console.log(data);
             toast("Your account is registered successfully")
         },
         onError: (error, variables, context) => {
-            console.log(error);
-            toast("Something went wrong")
+            toast(error.response.data.error);
         }
     });
 

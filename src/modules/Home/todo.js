@@ -1,40 +1,38 @@
+import { useState } from 'react';
 import { Card } from '../../components/card/card'
-import { CreateTodoModal } from './create.todo.modal';
-import {
-    useQuery,
-    useQueryClient,
-} from 'react-query';
-import axios from 'axios';
+import { TodoModal } from './todo.modal';
+import { useTodos, UseCreateTodo, UseUpdateTodo } from './todo.hook';
 
 
-function useTodos(userId) {
-    return useQuery("todos", async () => {
-        const { data } = await axios.get(
-            `http://8d9f20ea3607.ngrok.io/api/list_of_task/${userId}`
-        );
-        return data;
-    });
-}
 
 
 export const Todos = () => {
-
+    const [item, setItem] = useState({});
+    const [itemId, setItemId] = useState("");
     const { status, data, error, isFetching } = useTodos(localStorage.getItem("user_id"));
+    const create = UseCreateTodo();
+    const update = UseUpdateTodo();
 
-    const todosList = new Array(10).fill({
-        subject: "Tiltle of the todo",
-        todoDate: "12/11/2020",
-        todoTime: "23:45",
-        tag: "Personal",
-        status: "pending",
-        notes: "teaxt message"
-    })
+    const selectTodo = (todo) => {
+        console.log(todo);
+        const { createdAt, updatedAt, __v, _id, ...rest } = todo;
+        setItemId(_id);
+        setItem(rest);
+    }
+
+    const updateTodo = (todo) => {
+        update.mutate({ ...todo, id: localStorage.getItem("user_id"), todoId: itemId });
+    }
+
+    const createTodo = (todo) => {
+        create.mutate({ ...todo, id: localStorage.getItem("user_id") })
+    }
 
 
     return <>
 
-        <CreateTodoModal />
-
+        <TodoModal fnHandler={createTodo} dataId={"createModal"} />
+        <TodoModal fnHandler={updateTodo} buttonText={"Update Todo"} item={item} dataId={"updateModal"} />
         <div style={{
             height: "100vh",
             overflowY: "auto",
@@ -48,13 +46,13 @@ export const Todos = () => {
                         <p className="card-text">
                             Create a new todo, click on following action
                         </p>
-                        <div className="btn btn-primary px-4" data-toggle="modal" data-target="#myModal">
+                        <div className="btn btn-primary px-4" data-toggle="modal" data-target="#createModal">
                             Create
                         </div>
                     </div>
                 </div>
             </div>
-            {(!!data ? data : todosList).map((v, i) => <Card {...v} key={i} />)}
+            {data?.reverse().map((v, i) => <Card {...v} key={i} handler={() => selectTodo(v)} dataTarget={"#updateModal"} />)}
         </div>
     </>
 }
